@@ -1,0 +1,1 @@
+{"root":["../src/app.ts","../src/server.ts","../src/config/index.ts","../src/db/index.ts","../src/error-handling/index.ts","../src/middlewares/authmiddleware.ts","../src/routes/auth.routes.ts","../src/routes/index.routes.ts","../src/types/requests.ts"],"errors":true,"version":"5.7.2"}

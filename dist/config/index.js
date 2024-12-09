@@ -25,7 +25,9 @@ exports.default = app => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     (0, cors_1.default)({
-      origin: [FRONTEND_URL]
+      origin: [FRONTEND_URL],
+      credentials: true,
+      allowedHeaders: ['Authorization', 'Content-Type']
     })
   )
   // In development environment the app logs

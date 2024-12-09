@@ -21,6 +21,8 @@ import employeeRoutes from './routes/employee.routes'
 app.use('/employee', employeeRoutes)
 import assetRoutes from './routes/asset.routes'
 app.use('/assets', assetRoutes)
+import dashboardRoutes from './routes/dashbourd.routes'
+app.use('/dashboard', dashboardRoutes)
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 import errorHandling from './error-handling'
 errorHandling(app)

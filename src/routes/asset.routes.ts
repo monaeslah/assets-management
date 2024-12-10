@@ -91,7 +91,7 @@ router.get(
 
 // Read Single Asset
 router.get(
-  'assets/:id',
+  '/assets/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: ReadRequest, res: Response): Promise<void> => {
     const { id } = req.params
@@ -121,7 +121,7 @@ router.get(
 
 // Update Asset
 router.put(
-  'assets/:id',
+  '/assets/:id',
   authMiddleware(['HR_MANAGER']),
   [
     body('name').optional().notEmpty().withMessage('Name is required'),
@@ -133,22 +133,7 @@ router.put(
     body('assignedUserId')
       .optional()
       .isInt()
-      .withMessage('Assigned User ID must be an integer'),
-    body('serialNumber')
-      .optional()
-      .custom(async (value, { req }) => {
-        const assetId = parseInt(req.params?.id, 10)
-        const existingAsset = await prisma.asset.findFirst({
-          where: {
-            serialNumber: value,
-            id: { not: assetId }
-          }
-        })
-        if (existingAsset) {
-          throw new Error('Serial number already exists')
-        }
-        return true
-      })
+      .withMessage('Assigned User ID must be an integer')
   ],
   async (req: UpdateAssetRequest, res: Response): Promise<void> => {
     const { id } = req.params
@@ -200,7 +185,7 @@ router.put(
 
 // Delete Asset
 router.delete(
-  'assets/:id',
+  '/assets/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: DeleteRequest, res: Response): Promise<void> => {
     const { id } = req.params

@@ -18,7 +18,7 @@ app.use('/api', indexRoutes)
 import authRoutes from './routes/auth.routes'
 app.use('/auth', authRoutes)
 import employeeRoutes from './routes/employee.routes'
-app.use('/api/employee', employeeRoutes)
+app.use('/api', employeeRoutes)
 import assetRoutes from './routes/asset.routes'
 app.use('/api', assetRoutes)
 import dashboardRoutes from './routes/dashbourd.routes'

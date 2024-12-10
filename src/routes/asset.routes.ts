@@ -12,7 +12,7 @@ import {
 const router = Router()
 
 router.post(
-  '//assets',
+  '/assets',
   authMiddleware(['HR_MANAGER']),
   [
     body('name').notEmpty().withMessage('Name is required'),
@@ -75,7 +75,7 @@ router.post(
 
 // Read Assets
 router.get(
-  '/',
+  '/assets',
   authMiddleware(['HR_MANAGER']),
   async (req: ReadRequest, res: Response): Promise<void> => {
     try {
@@ -91,7 +91,7 @@ router.get(
 
 // Read Single Asset
 router.get(
-  '/:id',
+  'assets/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: ReadRequest, res: Response): Promise<void> => {
     const { id } = req.params
@@ -121,7 +121,7 @@ router.get(
 
 // Update Asset
 router.put(
-  '/:id',
+  'assets/:id',
   authMiddleware(['HR_MANAGER']),
   [
     body('name').optional().notEmpty().withMessage('Name is required'),
@@ -200,7 +200,7 @@ router.put(
 
 // Delete Asset
 router.delete(
-  '/:id',
+  'assets/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: DeleteRequest, res: Response): Promise<void> => {
     const { id } = req.params

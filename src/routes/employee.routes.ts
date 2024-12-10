@@ -11,7 +11,7 @@ import { body, validationResult } from 'express-validator'
 const router = Router()
 
 router.post(
-  '/',
+  '/employee',
   authMiddleware(['HR_MANAGER']),
   [
     body('name').notEmpty().withMessage('Name is required'),
@@ -40,7 +40,7 @@ router.post(
 
 // Read Employees
 router.get(
-  '/',
+  '/employee',
   authMiddleware(['HR_MANAGER']),
   async (req: Request, res: Response): Promise<void> => {
     try {
@@ -63,7 +63,7 @@ router.get(
 
 // Read Single Employee
 router.get(
-  '/:id',
+  '/employee/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params
@@ -88,7 +88,7 @@ router.get(
 
 // Update Employee
 router.put(
-  '/:id',
+  '/employee/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: UpdateEmployeeRequest, res: Response): Promise<void> => {
     const { id } = req.params
@@ -109,7 +109,7 @@ router.put(
 
 // Delete Employee
 router.delete(
-  '/:id',
+  '/employee/:id',
   authMiddleware(['HR_MANAGER']),
   async (req: DeleteRequest, res: Response): Promise<void> => {
     const { id } = req.params

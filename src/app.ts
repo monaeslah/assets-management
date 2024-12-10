@@ -20,7 +20,7 @@ app.use('/auth', authRoutes)
 import employeeRoutes from './routes/employee.routes'
 app.use('/api/employee', employeeRoutes)
 import assetRoutes from './routes/asset.routes'
-app.use('/api/assets', assetRoutes)
+app.use('/api', assetRoutes)
 import dashboardRoutes from './routes/dashbourd.routes'
 app.use('/api/dashboard', dashboardRoutes)
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes

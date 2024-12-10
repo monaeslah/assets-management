@@ -11,9 +11,8 @@ import {
 
 const router = Router()
 
-// Create Asset
 router.post(
-  '/',
+  '//assets',
   authMiddleware(['HR_MANAGER']),
   [
     body('name').notEmpty().withMessage('Name is required'),

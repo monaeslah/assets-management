@@ -8,7 +8,8 @@ async function main () {
     { name: 'Engineering' },
     { name: 'Human Resources (HR)' },
     { name: 'Marketing' },
-    { name: 'Finance' }
+    { name: 'Finance' },
+    { name: 'none' }
   ]
 
   for (const department of departments) {

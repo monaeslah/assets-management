@@ -27,18 +27,20 @@ export interface LoginUserRequest extends Request {
 export interface CreateEmployeeRequest extends Request {
   body: {
     name: string
-    department: string
+    departmentId: number // Use number for the department ID
   }
 }
+
 export interface UpdateEmployeeRequest extends Request {
   body: {
     name?: string
-    department?: string
+    departmentId?: number // Use optional field for updates
   }
   params: {
-    id: string
+    id: string // ID of the employee being updated
   }
 }
+
 export interface CreateAssetRequest extends Request {
   body: {
     name: string

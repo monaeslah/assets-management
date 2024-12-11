@@ -56,7 +56,7 @@ router.post(
       const token = jwt.sign(
         { id: user.id, role: user.role },
         process.env.TOKEN_SECRET!,
-        { expiresIn: '1h' }
+        { expiresIn: '6d' }
       )
 
       res.status(201).json({ user, token })
@@ -98,7 +98,7 @@ router.post(
       const token = jwt.sign(
         { id: user.id, role: user.role },
         process.env.TOKEN_SECRET!,
-        { expiresIn: '1h' }
+        { expiresIn: '6d' }
       )
 
       res.json({

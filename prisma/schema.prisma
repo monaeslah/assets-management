@@ -25,9 +25,10 @@ model User {
 }
 
 model Employee {
-  id           Int     @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   name         String
-  department   String
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId Int?
   assetHistory Asset[]
 
   @@map("employees")
@@ -43,6 +44,14 @@ model Asset {
   assignedUserId Int?
 
   @@map("assets")
+}
+
+model Department {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  employees Employee[]
+
+  @@map("departments")
 }
 
 enum Role {

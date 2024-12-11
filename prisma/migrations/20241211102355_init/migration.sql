@@ -20,7 +20,7 @@ CREATE TABLE "users" (
 CREATE TABLE "employees" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "department" TEXT NOT NULL,
+    "departmentId" INTEGER,
 
     CONSTRAINT "employees_pkey" PRIMARY KEY ("id")
 );
@@ -37,11 +37,25 @@ CREATE TABLE "assets" (
     CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "departments" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "departments_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "assets_serialNumber_key" ON "assets"("serialNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
+
+-- AddForeignKey
+ALTER TABLE "employees" ADD CONSTRAINT "employees_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "assets" ADD CONSTRAINT "assets_assignedUserId_fkey" FOREIGN KEY ("assignedUserId") REFERENCES "employees"("id") ON DELETE SET NULL ON UPDATE CASCADE;

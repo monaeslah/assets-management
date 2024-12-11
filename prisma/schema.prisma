@@ -21,44 +21,32 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Define the one-to-one relationship
-  employee Employee? @relation(name: "EmployeeToUser")
+  name         String
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId Int?
+  Asset        Asset[]
 
   @@map("users")
 }
 
-model Employee {
-  id           Int         @id @default(autoincrement())
-  name         String
-  department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId Int?
-  assetHistory Asset[]
+model Department {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  employees User[]
 
-  // Define the one-to-one relationship
-  user   User? @relation(name: "EmployeeToUser", fields: [userId], references: [id])
-  userId Int?  @unique // Add @unique to indicate one-to-one
-
-  @@map("employees")
+  @@map("departments")
 }
 
 model Asset {
-  id             Int       @id @default(autoincrement())
+  id             Int    @id @default(autoincrement())
   name           String
   type           String
-  serialNumber   String    @unique
-  status         Status    @default(AVAILABLE)
-  assignedUser   Employee? @relation(fields: [assignedUserId], references: [id])
+  serialNumber   String @unique
+  status         Status @default(AVAILABLE)
   assignedUserId Int?
+  assignedUser   User?  @relation(fields: [assignedUserId], references: [id])
 
   @@map("assets")
-}
-
-model Department {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  employees Employee[]
-
-  @@map("departments")
 }
 
 enum Role {

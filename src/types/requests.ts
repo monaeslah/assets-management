@@ -11,7 +11,9 @@ export interface RegisterUserRequest extends Request {
   body: {
     email: string
     password: string
-    role: Role
+    role?: Role
+    name?: string
+    departmentId?: number
   }
 }
 export interface TokenPayload {

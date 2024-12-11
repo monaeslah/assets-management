@@ -50,7 +50,7 @@ router.post(
     try {
       // If `assignedUserId` is provided, validate that the user exists
       if (assignedUserId) {
-        const user = await prisma.employee.findUnique({
+        const user = await prisma.user.findUnique({
           where: { id: assignedUserId }
         })
         if (!user) {
@@ -162,7 +162,7 @@ router.put(
       }
 
       if (assignedUserId) {
-        const user = await prisma.employee.findUnique({
+        const user = await prisma.user.findUnique({
           where: { id: assignedUserId }
         })
         if (!user) {

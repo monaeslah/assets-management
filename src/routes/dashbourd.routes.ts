@@ -7,7 +7,7 @@ export const getDashboardData = async (req: Request, res: Response) => {
   try {
     const totalAssets = await prisma.asset.count()
 
-    const totalEmployees = await prisma.employee.count()
+    const totalEmployees = await prisma.user.count()
 
     const availableAssets = await prisma.asset.count({
       where: { status: 'AVAILABLE' }

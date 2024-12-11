@@ -9,13 +9,14 @@ async function main () {
     { name: 'Human Resources (HR)' },
     { name: 'Marketing' },
     { name: 'Finance' },
+
     { name: 'none' }
   ]
 
   for (const department of departments) {
     await prisma.department.upsert({
       where: { name: department.name },
-      update: {}, // Update is empty to prevent overwriting
+      update: {},
       create: { name: department.name }
     })
   }

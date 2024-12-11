@@ -12,18 +12,18 @@ CREATE TABLE "users" (
     "role" "Role" NOT NULL DEFAULT 'EMPLOYEE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "departmentId" INTEGER,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "employees" (
+CREATE TABLE "departments" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "departmentId" INTEGER,
-    "userId" INTEGER,
 
-    CONSTRAINT "employees_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "departments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -38,31 +38,17 @@ CREATE TABLE "assets" (
     CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "departments" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-
-    CONSTRAINT "departments_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "employees_userId_key" ON "employees"("userId");
+CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "assets_serialNumber_key" ON "assets"("serialNumber");
 
--- CreateIndex
-CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "employees" ADD CONSTRAINT "employees_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "employees" ADD CONSTRAINT "employees_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "assets" ADD CONSTRAINT "assets_assignedUserId_fkey" FOREIGN KEY ("assignedUserId") REFERENCES "employees"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "assets" ADD CONSTRAINT "assets_assignedUserId_fkey" FOREIGN KEY ("assignedUserId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

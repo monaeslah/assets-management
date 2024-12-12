@@ -1,6 +1,7 @@
 import { Router, Response } from 'express'
 import { body, validationResult } from 'express-validator'
 import authMiddleware from '../middlewares/authMiddleware'
+import { AssetValidationRules } from '../middlewares/validation'
 import prisma from '../db'
 import {
   CreateAssetRequest,
@@ -10,34 +11,12 @@ import {
 } from '../types/requests'
 
 const router = Router()
-
+const { create } = AssetValidationRules
 router.post(
   '/assets',
   authMiddleware(['HR_MANAGER']),
-  [
-    body('name').notEmpty().withMessage('Name is required'),
-    body('type').notEmpty().withMessage('Type is required'),
-    body('status')
-      .optional() // Make status optional
-      .isIn(['AVAILABLE', 'CHECKED_OUT'])
-      .withMessage('Status must be AVAILABLE or CHECKED_OUT'),
-    body('assignedUserId')
-      .optional()
-      .isInt()
-      .withMessage('Assigned User ID must be an integer'),
-    body('serialNumber')
-      .notEmpty()
-      .withMessage('Serial number is required')
-      .custom(async value => {
-        const asset = await prisma.asset.findUnique({
-          where: { serialNumber: value }
-        })
-        if (asset) {
-          throw new Error('Serial number already exists')
-        }
-        return true
-      })
-  ],
+  AssetValidationRules.create,
+
   async (req: CreateAssetRequest, res: Response): Promise<void> => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -48,7 +27,6 @@ router.post(
     const { name, type, serialNumber, status, assignedUserId } = req.body
 
     try {
-      // If `assignedUserId` is provided, validate that the user exists
       if (assignedUserId) {
         const user = await prisma.user.findUnique({
           where: { id: assignedUserId }
@@ -59,7 +37,6 @@ router.post(
         }
       }
 
-      // Use default status if not provided
       const assetStatus = status || 'AVAILABLE'
 
       const asset = await prisma.asset.create({

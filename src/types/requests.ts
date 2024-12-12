@@ -14,8 +14,10 @@ export interface RegisterUserRequest extends Request {
     role?: Role
     name?: string
     departmentId?: number
+    assignedAssets: AssignedAsset[]
   }
 }
+
 export interface TokenPayload {
   id: number
   role: Role
@@ -62,6 +64,10 @@ export interface UpdateAssetRequest extends Request {
   params: {
     id: string
   }
+}
+export interface AssignedAsset {
+  assetId: number
+  userId: number
 }
 export interface DeleteRequest extends Request {
   params: {

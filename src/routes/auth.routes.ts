@@ -52,14 +52,22 @@ router.post(
           departmentId: noneDepartment.id
         }
       })
-
+      const Asset = await prisma.asset.create({
+        data: {
+          name: 'Welcome Package',
+          type: 'Placeholder',
+          serialNumber: `WELCOME-${user.id}`,
+          status: 'CHECKED_OUT',
+          assignedUserId: user.id
+        }
+      })
       const token = jwt.sign(
         { id: user.id, role: user.role },
         process.env.TOKEN_SECRET!,
         { expiresIn: '6d' }
       )
 
-      res.status(201).json({ user, token })
+      res.status(201).json({ user, token, Asset })
     } catch (error) {
       res.status(500).json({ message: 'Error creating user', error })
     }

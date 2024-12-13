@@ -39,6 +39,7 @@ export interface UpdateEmployeeRequest extends Request {
   body: {
     name?: string
     departmentId?: number
+    role?: string
   }
   params: {
     id: string

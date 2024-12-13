@@ -96,10 +96,17 @@ router.get(
 router.put(
   '/employee/:id',
   authMiddleware(['HR_MANAGER']),
-  [body('departmentId').notEmpty().withMessage('Department is required')],
+  [
+    body('departmentId')
+      .optional()
+      .isInt()
+      .withMessage('Department ID must be an integer'),
+    body('role').optional().isString().withMessage('Role must be a string'),
+    body('name').optional().isString().withMessage('Name must be a string')
+  ],
   async (req: UpdateEmployeeRequest, res: Response): Promise<void> => {
     const { id } = req.params
-    const { departmentId } = req.body
+    const { name, departmentId, role } = req.body
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -108,27 +115,19 @@ router.put(
     }
 
     try {
-      // Validate the department exists
-      const department = await prisma.department.findUnique({
-        where: { id: departmentId }
-      })
-
-      if (!department) {
-        res.status(404).json({ message: 'Department not found' })
-        return
-      }
-
-      // Update the employee's department
+      const updateData: { [key: string]: any } = {}
+      if (name !== undefined) updateData.name = name
+      if (departmentId !== undefined) updateData.departmentId = departmentId
+      if (role !== undefined) updateData.role = role
+      console.log(updateData)
       const updatedEmployee = await prisma.user.update({
         where: { id: parseInt(id, 10) },
-        data: { departmentId }
+        data: updateData
       })
 
       res.status(200).json({ employee: updatedEmployee })
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: 'Error updating employee department', error })
+      res.status(500).json({ message: 'Error updating employee', error })
     }
   }
 )

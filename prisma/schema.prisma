@@ -38,15 +38,24 @@ model Department {
 }
 
 model Asset {
-  id             Int    @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   name           String
   type           String
-  serialNumber   String @unique
-  status         Status @default(AVAILABLE)
+  serialNumber   String         @unique
+  status         Status         @default(AVAILABLE)
   assignedUserId Int?
-  assignedUser   User?  @relation(fields: [assignedUserId], references: [id])
+  assignedUser   User?          @relation(fields: [assignedUserId], references: [id])
+  AssetHistory   AssetHistory[]
 
   @@map("assets")
+}
+
+model AssetHistory {
+  id        Int      @id @default(autoincrement())
+  assetId   Int
+  asset     Asset    @relation(fields: [assetId], references: [id])
+  status    Status
+  timestamp DateTime @default(now())
 }
 
 enum Role {

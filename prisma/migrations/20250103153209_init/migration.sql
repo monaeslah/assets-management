@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('EMPLOYEE', 'HR_MANAGER');
+CREATE TYPE "Role" AS ENUM ('EMPLOYEE', 'HR_MANAGER', 'SUPER_ADMIN');
 
 -- CreateEnum
 CREATE TYPE "Status" AS ENUM ('AVAILABLE', 'CHECKED_OUT');
@@ -38,6 +38,16 @@ CREATE TABLE "assets" (
     CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "AssetHistory" (
+    "id" SERIAL NOT NULL,
+    "assetId" INTEGER NOT NULL,
+    "status" "Status" NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AssetHistory_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -52,3 +62,6 @@ ALTER TABLE "users" ADD CONSTRAINT "users_departmentId_fkey" FOREIGN KEY ("depar
 
 -- AddForeignKey
 ALTER TABLE "assets" ADD CONSTRAINT "assets_assignedUserId_fkey" FOREIGN KEY ("assignedUserId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssetHistory" ADD CONSTRAINT "AssetHistory_assetId_fkey" FOREIGN KEY ("assetId") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

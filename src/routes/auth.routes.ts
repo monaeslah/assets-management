@@ -62,7 +62,7 @@ router.post(
         }
       })
       const token = jwt.sign(
-        { id: user.id, role: user.role },
+        { id: user.id, email: user.email, role: user.role },
         process.env.TOKEN_SECRET!,
         { expiresIn: '6d' }
       )

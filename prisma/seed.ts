@@ -3,13 +3,11 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main () {
-  // Static departments
   const departments = [
     { name: 'Engineering' },
     { name: 'Human Resources (HR)' },
     { name: 'Marketing' },
     { name: 'Finance' },
-
     { name: 'none' }
   ]
 
@@ -22,6 +20,19 @@ async function main () {
   }
 
   console.log('Static departments added.')
+  //create super Admin
+  const superAdmin = await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
+      email: 'admin@admin.com',
+      password: 'admin',
+      role: 'SUPER_ADMIN',
+      name: 'Super Admin',
+      departmentId: null
+    }
+  })
+  console.log('Super Admin created:', superAdmin)
 }
 
 main()

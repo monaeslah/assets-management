@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
-export type Role = 'HR_MANAGER' | 'EMPLOYEE'
+export type Role = 'HR_MANAGER' | 'EMPLOYEE' | 'SUPER_ADMIN'
 export interface AuthenticatedRequest extends Request {
   user?: {
     id: number

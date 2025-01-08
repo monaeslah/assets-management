@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-
+import bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 async function main () {
@@ -20,13 +20,14 @@ async function main () {
   }
 
   console.log('Static departments added.')
+  const hashedPassword = await bcrypt.hash('securepassword', 10)
   //create super Admin
   const superAdmin = await prisma.user.upsert({
     where: { email: 'admin@example.com' },
     update: {},
     create: {
       email: 'admin@admin.com',
-      password: 'admin',
+      password: hashedPassword,
       role: 'SUPER_ADMIN',
       name: 'Super Admin',
       departmentId: null

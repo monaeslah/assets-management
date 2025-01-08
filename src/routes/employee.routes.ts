@@ -7,8 +7,9 @@ import {
 } from '../types/requests'
 import prisma from '../db'
 import authMiddleware from '../middlewares/authMiddleware'
-import { body, validationResult } from 'express-validator'
+import { body, param, validationResult } from 'express-validator'
 const router = Router()
+const rolesSuper = ['HR_MANAGER', 'SUPER_ADMIN']
 router.get(
   '/employee/departments',
   authMiddleware(['HR_MANAGER']),
@@ -21,44 +22,17 @@ router.get(
     }
   }
 )
-// router.post(
-//   '/employee',
-//   authMiddleware(['HR_MANAGER']),
-//   [
-//     body('name').notEmpty().withMessage('Name is required'),
-//     body('departmentId').notEmpty().withMessage('Department is required')
-//   ],
-//   async (req: CreateEmployeeRequest, res: Response): Promise<void> => {
-//     const errors = validationResult(req)
-//     if (!errors.isEmpty()) {
-//       res.status(400).json({ errors: errors.array() })
-//       return
-//     }
-
-//     const { name, departmentId } = req.body
-
-//     try {
-//       const department = await prisma.department.findUnique({
-//         where: { id: departmentId }
-//       })
-//       if (!department) {
-//         res.status(404).json({ message: 'Department not found' })
-//         return
-//       }
-//       const employee = await prisma.user.create({
-//         data: { name, departmentId }
-//       })
-//       res.status(201).json({ employee })
-//     } catch (error) {
-//       res.status(500).json({ message: 'Error creating employee', error })
-//     }
-//   }
-// )
 
 router.get(
   '/employee/:id',
   authMiddleware(['HR_MANAGER']),
+  param('id').isInt().withMessage('Employee ID must be an integer'),
   async (req: Request, res: Response): Promise<void> => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() })
+      return
+    }
     const { id } = req.params
 
     try {
@@ -72,7 +46,11 @@ router.get(
         return
       }
 
-      res.status(200).json({ employee })
+      res.status(200).json({
+        status: 'success',
+        message: 'Employee retrieved successfully',
+        data: { employee }
+      })
     } catch (error) {
       res.status(500).json({ message: 'Error fetching employee', error })
     }
@@ -80,7 +58,8 @@ router.get(
 )
 router.get(
   '/employee',
-  authMiddleware(['HR_MANAGER']),
+  // authMiddleware(['HR_MANAGER']),÷
+  authMiddleware(rolesSuper),
   async (req: Request, res: Response): Promise<void> => {
     try {
       const employees = await prisma.user.findMany({
@@ -89,7 +68,12 @@ router.get(
 
       res.status(200).json({ employees })
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching employees', error })
+      if (!res.headersSent) {
+        // Only sends a response if headers were not already sent
+        res.status(500).json({ message: 'Error fetching employees', error })
+      } else {
+        res.status(500).json({ message: 'Error fetching employees', error })
+      }
     }
   }
 )
@@ -118,7 +102,18 @@ router.put(
       const updateData: { [key: string]: any } = {}
       if (name !== undefined) updateData.name = name
       if (departmentId !== undefined) updateData.departmentId = departmentId
-      if (role !== undefined) updateData.role = role
+      if (role !== undefined) {
+        if (
+          req.body.role === 'HR_MANAGER' &&
+          ['HR_MANAGER', 'SUPER_ADMIN'].includes(role)
+        ) {
+          res
+            .status(403)
+            .json({ message: 'Forbidden: Cannot assign restricted roles.' })
+          return
+        }
+        updateData.role = role
+      }
       console.log(updateData)
       const updatedEmployee = await prisma.user.update({
         where: { id: parseInt(id, 10) },
@@ -132,11 +127,16 @@ router.put(
   }
 )
 
-// Delete Employee
 router.delete(
   '/employee/:id',
   authMiddleware(['HR_MANAGER']),
+  param('id').isInt().withMessage('Employee ID must be an integer'),
   async (req: DeleteRequest, res: Response): Promise<void> => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() })
+      return
+    }
     const { id } = req.params
 
     try {
@@ -149,7 +149,6 @@ router.delete(
         return
       }
 
-      // Ensure all assets assigned to the employee are cleared
       await prisma.asset.updateMany({
         where: { assignedUserId: parseInt(id, 10) },
         data: { assignedUserId: null }
@@ -159,7 +158,10 @@ router.delete(
         where: { id: parseInt(id, 10) }
       })
 
-      res.status(204).send()
+      res.status(204).json({
+        status: 'success',
+        message: 'Employee deleted successfully'
+      })
     } catch (error) {
       res.status(500).json({ message: 'Error deleting employee', error })
     }
